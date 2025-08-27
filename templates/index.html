@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to PowerPoint</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+        :root {
+            --primary-blue: #3E82F7;
+            --secondary-cyan: #1ABC9C;
+            --light-bg: #F5F9FF;
+            --card-bg: #FFFFFF;
+            --text-color: #34495E;
+            --border-color: #EAEFF6;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            padding: 40px;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 1px solid var(--border-color);
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-blue);
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        h1::before, h1::after {
+            content: '';
+            flex-grow: 1;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--primary-blue), transparent);
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+
+        textarea, input[type="text"], input[type="password"], select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            margin-top: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--light-bg);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(62, 130, 247, 0.2);
+            background-color: #fff;
+        }
+        
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, var(--primary-blue), var(--secondary-cyan));
+            color: white;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #EAEFF6;
+            color: #C1C9D4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        #status {
+            margin-top: 25px;
+            text-align: center;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: var(--light-bg);
+        }
+
+        .error {
+            color: #E74C3C;
+        }
+
+        .success {
+            color: #2ECC71;
+        }
+
+        /* Custom file input styling */
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: inline-block;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .file-upload-label:hover {
+            background: var(--secondary-cyan);
+        }
+        .file-name {
+            margin-left: 10px;
+            font-size: 0.9em;
+            color: #7F8C8D;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text to Presentation 🚀</h1>
+        <form id="pptx-form">
+            <label for="text_content">Paste your text/markdown here:</label>
+            <textarea id="text_content" name="text_content" rows="15" required></textarea>
+
+            <label for="guidance">Guidance (e.g., "investor pitch deck", "technical overview"):</label>
+            <input type="text" id="guidance" name="guidance" placeholder="Optional">
+
+            <label for="llm_provider">LLM Provider:</label>
+            <select id="llm_provider" name="llm_provider" required>
+                <option value="openai">OpenAI</option>
+                <option value="anthropic">Anthropic</option>
+                <option value="gemini">Gemini</option>
+            </select>
+            
+            <label for="api_key">Your LLM API Key (never stored):</label>
+            <input type="password" id="api_key" name="api_key" required>
+
+            <label for="template">Upload a PowerPoint template (.pptx or .potx):</label>
+            <input type="file" id="template" name="template" accept=".pptx, .potx" required>
+            <label for="template" class="file-upload-label">
+                Choose File
+            </label>
+            <span class="file-name" id="file-name">No file chosen</span>
+
+            <button type="submit" id="submit-btn">Generate Presentation</button>
+        </form>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        document.getElementById('pptx-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const statusDiv = document.getElementById('status');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            statusDiv.textContent = 'Generating... Please wait, this may take a moment.';
+            statusDiv.className = '';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'generated_presentation.pptx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    statusDiv.textContent = 'Success! Your download should start shortly.';
+                    statusDiv.className = 'success';
+                } else {
+                    const errorData = await response.json();
+                    statusDiv.textContent = `Error: ${errorData.error}`;
+                    statusDiv.className = 'error';
+                }
+            } catch (error) {
+                statusDiv.textContent = `An unexpected error occurred: ${error.message}`;
+                statusDiv.className = 'error';
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Update file name display
+        document.getElementById('template').addEventListener('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+            document.getElementById('file-name').textContent = fileName;
+        });
+    </script>
+</body>
+</html>
