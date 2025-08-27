@@ -35,7 +35,7 @@ A publicly accessible web app that lets anyone turn bulk text or markdown into a
 
 1.  **Clone the repository:**
     ```sh
-    git clone [https://github.com/your-username/Auto-PPT-Generator.git](https://github.com/your-username/Auto-PPT-Generator.git)
+    git clone https://github.com/shreyasaxena21/ppt-generator
     cd Auto-PPT-Generator
     ```
 
@@ -60,5 +60,6 @@ A working hosted link will be provided here for demonstration purposes.
 *Disclaimer: This is a demo application. Use at your own risk. The app does not store any sensitive user data.*
 
 ## License
+
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
